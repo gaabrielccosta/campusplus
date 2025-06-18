@@ -1,24 +1,23 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+// Arquivo: src/App.tsx
 
-function App() {
+import React, { JSX } from 'react';
+import './App.css';
+import SolicitarDocumentoForm, { DocumentoDTO } from './components/SolicitarDocumentoForm';
+
+const App: React.FC = () => {
+  const onSuccess = (doc: DocumentoDTO) => {
+    console.log('Documento criado com sucesso:', doc);
+    // aqui você pode atualizar estado, mostrar notificação, etc.
+  };
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1>Campus+ - Solicitar Documento</h1>
       </header>
+      <main>
+        <SolicitarDocumentoForm alunoId={1} onSuccess={onSuccess} />
+      </main>
     </div>
   );
 }
