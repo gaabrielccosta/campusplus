@@ -1,0 +1,68 @@
+/* SolicitarDocumentoForm.css */
+
+/* Regra para o título da página */
+.page-title {
+    margin-bottom: 1rem;
+    /* espaço logo abaixo do título */
+}
+
+/* Container do formulário sem margem-top */
+.form-container {
+    max-width: 400px;
+    margin: 0 auto;
+    /* remove o margin-top */
+    padding: 1.25rem;
+    background: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* ... o resto permanece igual ... */
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-select {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.form-select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
+.submit-button {
+    width: 100%;
+    padding: 0.75rem;
+    background: #007bff;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.submit-button:disabled {
+    background: #a0c5f8;
+    cursor: not-allowed;
+}
+
+.submit-button:not(:disabled):hover {
+    background: #0056b3;
+}
