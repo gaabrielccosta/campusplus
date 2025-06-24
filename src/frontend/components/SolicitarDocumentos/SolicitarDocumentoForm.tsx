@@ -1,5 +1,7 @@
 import React, { FormEvent, useState } from 'react';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
+import './SolicitarDocumentoForm.css';
+import api from '../../services/api';
 
 export interface DocumentoDTO {
     id: number;
@@ -15,7 +17,7 @@ interface ISolicitarDocumentoFormProps {
 
 const SolicitarDocumentoForm: React.FC<ISolicitarDocumentoFormProps> = ({
     alunoId,
-    onSuccess
+    onSuccess,
 }) => {
     const [tipo, setTipo] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
@@ -25,17 +27,12 @@ const SolicitarDocumentoForm: React.FC<ISolicitarDocumentoFormProps> = ({
         setLoading(true);
 
         try {
-            const response = await axios.post<DocumentoDTO>(
-                '/api/documentos/solicitar',
+            const response = await api.post<DocumentoDTO>(
+                '/documentos/solicitar',
                 { alunoId, tipo },
-                {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }
+                { headers: { 'Content-Type': 'application/json' } }
             );
 
-            // HTTP 201 Created
             if (response.status === 201) {
                 onSuccess(response.data);
             } else {
@@ -44,10 +41,8 @@ const SolicitarDocumentoForm: React.FC<ISolicitarDocumentoFormProps> = ({
         } catch (err) {
             const error = err as AxiosError;
             if (error.response) {
-                // Erro de resposta do servidor
                 alert(`Erro ${error.response.status}: ${error.response.data}`);
             } else {
-                // Falha de rede ou outro
                 alert(`Erro ao conectar: ${error.message}`);
             }
         } finally {
@@ -56,10 +51,14 @@ const SolicitarDocumentoForm: React.FC<ISolicitarDocumentoFormProps> = ({
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <label>
-                Tipo de Documento:
+        <form className="form-container" onSubmit={handleSubmit}>
+            <div className="form-group">
+                <label className="form-label" htmlFor="tipo">
+                    Tipo de Documento
+                </label>
                 <select
+                    id="tipo"
+                    className="form-select"
                     value={tipo}
                     onChange={e => setTipo(e.target.value)}
                     required
@@ -70,12 +69,16 @@ const SolicitarDocumentoForm: React.FC<ISolicitarDocumentoFormProps> = ({
                     <option value="Histórico">Histórico</option>
                     <option value="Declaração">Declaração</option>
                 </select>
-            </label>
-            <button type="submit" disabled={loading || !tipo}>
+            </div>
+            <button
+                type="submit"
+                className="submit-button"
+                disabled={loading || !tipo}
+            >
                 {loading ? 'Enviando...' : 'Solicitar'}
             </button>
         </form>
     );
-}
+};
 
 export default SolicitarDocumentoForm;
