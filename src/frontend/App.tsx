@@ -38,7 +38,7 @@ const App: React.FC = () => {
               <SolicitarDocumentoForm userId={user.id!} />
             )}
             {currentPage === 'forum' && (
-              <ForumPage />
+              <ForumPage username={user.username}/>
             )}
           </main>
         </div>
