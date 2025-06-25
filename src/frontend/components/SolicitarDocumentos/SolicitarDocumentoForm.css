@@ -66,3 +66,27 @@
 .submit-button:not(:disabled):hover {
     background: #0056b3;
 }
+
+.document-preview {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 0.25rem;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.document-preview h2 {
+    margin-bottom: 0.75rem;
+    font-size: 1.125rem;
+    color: #333;
+}
+
+.document-preview pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: #444;
+}

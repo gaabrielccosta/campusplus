@@ -4,7 +4,7 @@ import br.ucs.campusPlus.entity.Documento;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -13,7 +13,7 @@ public class DocumentoVO {
     private String erro;
     private String tipo;
     private String status;
-    private LocalDate dataSolicitacao;
+    private Date dataSolicitacao;
 
     public static DocumentoVO from(Documento doc) {
         DocumentoVO dto = new DocumentoVO();

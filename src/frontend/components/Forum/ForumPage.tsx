@@ -245,14 +245,25 @@ const ForumPage: React.FC<IForumPageProps> = ({ user }) => {
                 >
                   <p>
                     <strong>{post.author}</strong> em{" "}
-                    {post.createdAt.toLocaleString()}
+                    {post.createdAt.toLocaleString("pt-BR")}
                   </p>
                   <p style={{ marginTop: "-15px" }}>
                     {post.role} {post.curso ? ` - ${post.curso}` : ""}
                     {post.departamento ? ` - ${post.departamento}` : ""}
                   </p>
                 </div>
-                <p style={{ marginTop: "10px" }}>Mensagem: {post.content}</p>
+
+                {/* aqui a mensagem com quebra automática */}
+                <p
+                  style={{
+                    marginTop: "10px",
+                    wordBreak: "break-word",
+                    overflowWrap: "break-word",
+                    whiteSpace: "pre-wrap",
+                  }}
+                >
+                  Mensagem: {post.content}
+                </p>
               </div>
             ))}
           </div>

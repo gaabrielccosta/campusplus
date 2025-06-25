@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class DocumentoService {
@@ -36,8 +38,15 @@ public class DocumentoService {
         doc.setUser(user);
         doc.setTipo(tipo);
         doc.setStatus("Em processo");
-        doc.setDataSolicitacao(LocalDate.now());
+        doc.setDataSolicitacao(new Date());
 
         return documentoRepository.save(doc);
+    }
+
+    public Optional<Documento> buscarDocumento(Long userId, String tipo) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
+
+        return documentoRepository.findByUserAndTipo(user, tipo);
     }
 }

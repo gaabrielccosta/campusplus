@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Table(name = "documento")
@@ -23,7 +24,7 @@ public class Documento {
     private String status;
 
     @Column(name = "data_solicitacao", nullable = false)
-    private LocalDate dataSolicitacao;
+    private Date dataSolicitacao;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
