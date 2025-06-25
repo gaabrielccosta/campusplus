@@ -11,7 +11,7 @@ import java.util.List;
 @Table(name = "topics")
 @Getter
 @Setter
-public class Topic {
+public class TopicoForum {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,5 +19,5 @@ public class Topic {
     private String title;
 
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Post> posts = new ArrayList<>();
+    private List<MensagemChat> posts = new ArrayList<>();
 }

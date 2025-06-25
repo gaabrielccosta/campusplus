@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Table(name = "posts")
 @Getter
 @Setter
-public class Post {
+public class MensagemChat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,5 +29,5 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "topic_id")
     @JsonIgnore
-    private Topic topic;
+    private TopicoForum topic;
 }

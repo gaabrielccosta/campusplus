@@ -2,7 +2,7 @@ import React, { useState, useEffect, FormEvent } from "react";
 import api from "../../services/api";
 import { UserResponse } from "../../types/UserResponse";
 
-interface Post {
+interface MensagemChat {
   id: number;
   author: string;
   role: string;
@@ -15,7 +15,7 @@ interface Post {
 interface Topic {
   id: number;
   title: string;
-  posts: Post[];
+  posts: MensagemChat[];
 }
 
 interface CreateTopicDTO {
@@ -121,11 +121,11 @@ const ForumPage: React.FC<IForumPageProps> = ({ user }) => {
     };
 
     try {
-      const res = await api.post<Post>(
+      const res = await api.post<MensagemChat>(
         `/topics/${selectedTopic.id}/posts`,
         dto
       );
-      const newPost: Post = {
+      const newPost: MensagemChat = {
         ...res.data,
         createdAt: new Date(res.data.createdAt),
       };

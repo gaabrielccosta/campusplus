@@ -2,8 +2,8 @@ package br.ucs.campusPlus.controller;
 
 import br.ucs.campusPlus.dto.CreatePostDTO;
 import br.ucs.campusPlus.dto.CreateTopicDTO;
-import br.ucs.campusPlus.entity.Post;
-import br.ucs.campusPlus.entity.Topic;
+import br.ucs.campusPlus.entity.MensagemChat;
+import br.ucs.campusPlus.entity.TopicoForum;
 import br.ucs.campusPlus.service.ForumService;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,17 +19,17 @@ public class ForumController {
     }
 
     @GetMapping
-    public List<Topic> listTopics() {
+    public List<TopicoForum> listTopics() {
         return service.getAllTopics();
     }
 
     @PostMapping
-    public Topic createTopic(@RequestBody CreateTopicDTO dto) {
+    public TopicoForum createTopic(@RequestBody CreateTopicDTO dto) {
         return service.createTopic(dto);
     }
 
     @PostMapping("/{id}/posts")
-    public Post reply(@PathVariable Long id, @RequestBody CreatePostDTO dto) {
+    public MensagemChat reply(@PathVariable Long id, @RequestBody CreatePostDTO dto) {
         return service.addReply(id, dto);
     }
 }

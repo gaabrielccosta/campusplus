@@ -2,8 +2,8 @@ package br.ucs.campusPlus.service;
 
 import br.ucs.campusPlus.dto.CreatePostDTO;
 import br.ucs.campusPlus.dto.CreateTopicDTO;
-import br.ucs.campusPlus.entity.Post;
-import br.ucs.campusPlus.entity.Topic;
+import br.ucs.campusPlus.entity.MensagemChat;
+import br.ucs.campusPlus.entity.TopicoForum;
 import br.ucs.campusPlus.repository.PostRepository;
 import br.ucs.campusPlus.repository.TopicRepository;
 import jakarta.transaction.Transactional;
@@ -22,15 +22,15 @@ public class ForumService {
         this.postRepo = postRepo;
     }
 
-    public List<Topic> getAllTopics() {
+    public List<TopicoForum> getAllTopics() {
         return topicRepo.findAll();
     }
 
     @Transactional
-    public Topic createTopic(CreateTopicDTO dto) {
-        Topic topic = new Topic();
+    public TopicoForum createTopic(CreateTopicDTO dto) {
+        TopicoForum topic = new TopicoForum();
         topic.setTitle(dto.getTitle());
-        Post first = new Post();
+        MensagemChat first = new MensagemChat();
         first.setAuthor(dto.getAuthor());
         first.setRole(dto.getRole());
         first.setCurso(dto.getCurso());
@@ -43,10 +43,10 @@ public class ForumService {
     }
 
     @Transactional
-    public Post addReply(Long topicId, CreatePostDTO dto) {
-        Topic topic = topicRepo.findById(topicId)
+    public MensagemChat addReply(Long topicId, CreatePostDTO dto) {
+        TopicoForum topic = topicRepo.findById(topicId)
                 .orElseThrow(() -> new RuntimeException("Tópico não encontrado"));
-        Post post = new Post();
+        MensagemChat post = new MensagemChat();
         post.setAuthor(dto.getAuthor());
         post.setRole(dto.getRole());
         post.setCurso(dto.getCurso());
