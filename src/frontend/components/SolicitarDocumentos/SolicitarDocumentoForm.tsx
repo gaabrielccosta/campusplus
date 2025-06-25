@@ -2,22 +2,14 @@ import React, { FormEvent, useState } from 'react';
 import { AxiosError } from 'axios';
 import './SolicitarDocumentoForm.css';
 import api from '../../services/api';
-
-export interface DocumentoDTO {
-    id: number;
-    tipo: string;
-    status: string;
-    dataSolicitacao: string;
-}
+import { Documento } from '../../types/Documento';
 
 interface ISolicitarDocumentoFormProps {
-    alunoId: number;
-    onSuccess: (doc: DocumentoDTO) => void;
+    userId: number;
 }
 
 const SolicitarDocumentoForm: React.FC<ISolicitarDocumentoFormProps> = ({
-    alunoId,
-    onSuccess,
+    userId,
 }) => {
     const [tipo, setTipo] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
@@ -27,16 +19,17 @@ const SolicitarDocumentoForm: React.FC<ISolicitarDocumentoFormProps> = ({
         setLoading(true);
 
         try {
-            const response = await api.post<DocumentoDTO>(
+            const response = await api.post<Documento>(
                 '/documentos/solicitar',
-                { alunoId, tipo },
+                { userId, tipo },
                 { headers: { 'Content-Type': 'application/json' } }
             );
 
-            if (response.status === 201) {
-                onSuccess(response.data);
+            const documento = response.data;
+            if (documento.erro) {
+                alert(documento.erro);
             } else {
-                alert(`Resposta inesperada: ${response.status}`);
+                alert("Documento solicitado com sucesso!");
             }
         } catch (err) {
             const error = err as AxiosError;
@@ -53,6 +46,7 @@ const SolicitarDocumentoForm: React.FC<ISolicitarDocumentoFormProps> = ({
     return (
         <form className="form-container" onSubmit={handleSubmit}>
             <div className="form-group">
+                <h1>Solicitar Documentos</h1>
                 <label className="form-label" htmlFor="tipo">
                     Tipo de Documento
                 </label>

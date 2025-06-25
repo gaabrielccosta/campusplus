@@ -1,6 +1,8 @@
 package br.ucs.campusPlus.controller;
 
 import br.ucs.campusPlus.entity.Documento;
+import br.ucs.campusPlus.exception.BusinessException;
+import br.ucs.campusPlus.exception.NotFoundException;
 import br.ucs.campusPlus.service.DocumentoService;
 import br.ucs.campusPlus.vo.DocumentoVO;
 import br.ucs.campusPlus.vo.SolicitarDocumentoRequestVO;
@@ -22,7 +24,13 @@ public class DocumentoController {
     // Endpoint exposto no Protótipo de Tela – formulário de solicitação
     @PostMapping("/solicitar")
     public ResponseEntity<DocumentoVO> solicitar(@RequestBody SolicitarDocumentoRequestVO request) {
-        Documento doc = documentoService.solicitarDocumento(request.getAlunoId(), request.getTipo());
-        return ResponseEntity.status(HttpStatus.CREATED).body(DocumentoVO.from(doc));
+        try {
+            Documento doc = documentoService.solicitarDocumento(request.getUserId(), request.getTipo());
+            return ResponseEntity.ok(DocumentoVO.from(doc));
+        } catch (NotFoundException | BusinessException e) {
+            DocumentoVO vo = new DocumentoVO();
+            vo.setErro(e.getMessage());
+            return ResponseEntity.ok(vo);
+        }
     }
 }

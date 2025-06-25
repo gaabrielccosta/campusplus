@@ -17,15 +17,15 @@ public class Documento {
     private Long id;
 
     @Column(nullable = false)
-    private String tipo; // derivado de 'tipo' do modelo de classes
+    private String tipo;
 
     @Column(nullable = false)
-    private String status; // inicializa como "Em processo" conforme UC01
+    private String status;
 
     @Column(name = "data_solicitacao", nullable = false)
-    private LocalDate dataSolicitacao; // definido no fluxo principal do diagrama de sequência
+    private LocalDate dataSolicitacao;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "aluno_id", nullable = false)
-    private Aluno aluno; // associação Aluno 1..* --- Documento 0..*
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }
