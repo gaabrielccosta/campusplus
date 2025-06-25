@@ -3,7 +3,7 @@ import './App.css';
 import SolicitarDocumentoForm from './components/SolicitarDocumentos/SolicitarDocumentoForm';
 import Login from './components/Login/Login';
 import { UserResponse } from './types/UserResponse';
-import ForumPage from './components/Forum/ForumPage';
+import ForumPage from './components/pages/Forum/ForumPage';
 
 type Page = 'solicitar' | 'forum';
 

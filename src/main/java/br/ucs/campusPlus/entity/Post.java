@@ -1,5 +1,6 @@
 package br.ucs.campusPlus.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ public class Post {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "topic_id")
+    @JsonIgnore
     private Topic topic;
 
     // getters e setters

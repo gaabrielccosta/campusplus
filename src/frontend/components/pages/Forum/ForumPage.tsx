@@ -1,6 +1,7 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState, useEffect, FormEvent } from 'react';
+import api from '../../../services/api';
 
-// Interfaces for TypeScript
+// Interfaces para TypeScript
 interface Post {
   id: number;
   author: string;
@@ -14,67 +15,130 @@ interface Topic {
   posts: Post[];
 }
 
-// Main Forum Page Component
+// DTOs para chamadas à API
+interface CreateTopicDTO {
+  title: string;
+  author: string;
+  content: string;
+}
+
+interface CreatePostDTO {
+  author: string;
+  content: string;
+}
+
 const ForumPage: React.FC = () => {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
 
-  // Form state for new topic
+  // Form state para novo tópico
   const [newTitle, setNewTitle] = useState('');
   const [newAuthor, setNewAuthor] = useState('');
   const [newContent, setNewContent] = useState('');
 
-  // Form state for replies
+  // Form state para respostas
   const [replyAuthor, setReplyAuthor] = useState('');
   const [replyContent, setReplyContent] = useState('');
 
-  // Handler to create a new topic
-  const handleCreateTopic = (e: FormEvent) => {
-    e.preventDefault();
-    if (!newTitle.trim() || !newAuthor.trim() || !newContent.trim()) {
-      return; // Could show validation message
+  // 1) fetchTopics: carrega todos os tópicos no mount
+  useEffect(() => {
+  const fetchTopics = async () => {
+    try {
+      const res = await api.get<Topic[]>('/topics');
+      // res.data já é Topic[]
+      const topicsFromApi = res.data.map(topic => ({
+        id: topic.id,
+        title: topic.title,
+        posts: topic.posts.map(post => ({
+          id: post.id,
+          author: post.author,
+          content: post.content,
+          createdAt: new Date(post.createdAt),
+        })),
+      }));
+      setTopics(topicsFromApi);
+    } catch (err) {
+      console.error('Erro ao carregar tópicos:', err);
     }
-    const topicId = topics.length + 1;
-    const firstPost: Post = {
-      id: 1,
+  };
+  fetchTopics();
+}, []);
+
+
+
+  // 2) criar novo tópico
+  const handleCreateTopic = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!newTitle.trim() || !newAuthor.trim() || !newContent.trim()) return;
+
+    const dto: CreateTopicDTO = {
+      title: newTitle.trim(),
       author: newAuthor.trim(),
       content: newContent.trim(),
-      createdAt: new Date(),
     };
-    const newTopic: Topic = { id: topicId, title: newTitle.trim(), posts: [firstPost] };
-    setTopics([...topics, newTopic]);
-    // Reset form
-    setNewTitle('');
-    setNewAuthor('');
-    setNewContent('');
+
+    try {
+      const res = await api.post<Topic>('/topics', dto, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      // converter createdAt dos posts retornados
+      const created = {
+        ...res.data,
+        posts: res.data.posts.map(post => ({
+          ...post,
+          createdAt: new Date(post.createdAt),
+        })),
+      };
+      setTopics(prev => [...prev, created]);
+      // reset form
+      setNewTitle('');
+      setNewAuthor('');
+      setNewContent('');
+    } catch (err) {
+      console.error('Erro ao criar tópico:', err);
+    }
   };
 
-  // Handler to add a reply
-  const handleAddReply = (e: FormEvent) => {
+  // 3) adicionar resposta
+  const handleAddReply = async (e: FormEvent) => {
     e.preventDefault();
-    if (!selectedTopic || !replyAuthor.trim() || !replyContent.trim()) {
-      return;
+    if (!selectedTopic || !replyAuthor.trim() || !replyContent.trim()) return;
+
+    const dto: CreatePostDTO = {
+      author: replyAuthor.trim(),
+      content: replyContent.trim(),
+    };
+
+    try {
+      const res = await api.post<Post>(
+        `/topics/${selectedTopic.id}/posts`,
+        dto,
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+      // converter createdAt
+      const newPost: Post = {
+        ...res.data,
+        createdAt: new Date(res.data.createdAt),
+      };
+
+      // atualizar lista de tópicos
+      setTopics(prev =>
+        prev.map(t =>
+          t.id === selectedTopic.id
+            ? { ...t, posts: [...t.posts, newPost] }
+            : t
+        )
+      );
+      // atualizar tópico selecionado
+      setSelectedTopic(prev =>
+        prev ? { ...prev, posts: [...prev.posts, newPost] } : prev
+      );
+      // reset form
+      setReplyAuthor('');
+      setReplyContent('');
+    } catch (err) {
+      console.error('Erro ao enviar resposta:', err);
     }
-    const updatedTopics = topics.map(topic => {
-      if (topic.id === selectedTopic.id) {
-        const newPost: Post = {
-          id: topic.posts.length + 1,
-          author: replyAuthor.trim(),
-          content: replyContent.trim(),
-          createdAt: new Date(),
-        };
-        return { ...topic, posts: [...topic.posts, newPost] };
-      }
-      return topic;
-    });
-    setTopics(updatedTopics);
-
-    // Update selectedTopic to reflect new reply
-    const updated = updatedTopics.find(t => t.id === selectedTopic.id) || null;
-    setSelectedTopic(updated);
-
-    setReplyAuthor('');
-    setReplyContent('');
   };
 
   return (
@@ -86,7 +150,10 @@ const ForumPage: React.FC = () => {
           {/* Create New Topic Form */}
           <section style={{ marginBottom: '2rem' }}>
             <h2>Criar Novo Tópico</h2>
-            <form onSubmit={handleCreateTopic} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <form
+              onSubmit={handleCreateTopic}
+              style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}
+            >
               <input
                 type="text"
                 placeholder="Título do tópico"
@@ -120,16 +187,31 @@ const ForumPage: React.FC = () => {
             ) : (
               <ul style={{ listStyle: 'none', padding: 0 }}>
                 {topics.map(topic => (
-                  <li key={topic.id} style={{ marginBottom: '1rem', border: '1px solid #ccc', padding: '0.5rem' }}>
+                  <li
+                    key={topic.id}
+                    style={{
+                      marginBottom: '1rem',
+                      border: '1px solid #ccc',
+                      padding: '0.5rem',
+                    }}
+                  >
                     <a
                       href="#"
-                      onClick={e => { e.preventDefault(); setSelectedTopic(topic); }}
-                      style={{ fontSize: '1.1rem', fontWeight: 'bold', textDecoration: 'none' }}
+                      onClick={e => {
+                        e.preventDefault();
+                        setSelectedTopic(topic);
+                      }}
+                      style={{
+                        fontSize: '1.1rem',
+                        fontWeight: 'bold',
+                        textDecoration: 'none',
+                      }}
                     >
                       {topic.title}
                     </a>
                     <p style={{ margin: '0.25rem 0' }}>
-                      {topic.posts.length} {topic.posts.length === 1 ? 'mensagem' : 'mensagens'}
+                      {topic.posts.length}{' '}
+                      {topic.posts.length === 1 ? 'mensagem' : 'mensagens'}
                     </p>
                   </li>
                 ))}
@@ -140,12 +222,23 @@ const ForumPage: React.FC = () => {
       ) : (
         <>
           {/* Thread View */}
-          <button onClick={() => setSelectedTopic(null)} style={{ marginBottom: '1rem' }}>&larr; Voltar</button>
+          <button
+            onClick={() => setSelectedTopic(null)}
+            style={{ marginBottom: '1rem' }}
+          >
+            &larr; Voltar
+          </button>
           <h2>{selectedTopic.title}</h2>
           <div>
             {selectedTopic.posts.map(post => (
-              <div key={post.id} style={{ borderBottom: '1px solid #eee', padding: '0.5rem 0' }}>
-                <p><strong>{post.author}</strong> em {post.createdAt.toLocaleString()}</p>
+              <div
+                key={post.id}
+                style={{ borderBottom: '1px solid #eee', padding: '0.5rem 0' }}
+              >
+                <p>
+                  <strong>{post.author}</strong> em{' '}
+                  {post.createdAt.toLocaleString()}
+                </p>
                 <p>{post.content}</p>
               </div>
             ))}
@@ -154,7 +247,10 @@ const ForumPage: React.FC = () => {
           {/* Reply Form */}
           <section style={{ marginTop: '1rem' }}>
             <h3>Responder</h3>
-            <form onSubmit={handleAddReply} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <form
+              onSubmit={handleAddReply}
+              style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}
+            >
               <input
                 type="text"
                 placeholder="Seu nome"
