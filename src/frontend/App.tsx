@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import './App.css';
-import SolicitarDocumentoForm from './components/SolicitarDocumentos/SolicitarDocumentoForm';
-import Login from './components/Login/Login';
-import { UserResponse } from './types/UserResponse';
-import ForumPage from './components/pages/Forum/ForumPage';
+import React, { useState } from "react";
+import "./App.css";
+import SolicitarDocumentoForm from "./components/SolicitarDocumentos/SolicitarDocumentoForm";
+import Login from "./components/Login/Login";
+import { UserResponse } from "./types/UserResponse";
+import ForumPage from "./components/Forum/ForumPage";
 
-type Page = 'solicitar' | 'forum';
+type Page = "solicitar" | "forum";
 
 const App: React.FC = () => {
   const [user, setUser] = useState<UserResponse | null>(null);
-  const [currentPage, setCurrentPage] = useState<Page>('solicitar');
+  const [currentPage, setCurrentPage] = useState<Page>("solicitar");
 
   return (
     <>
@@ -17,9 +17,7 @@ const App: React.FC = () => {
       {user && user.authenticated && (
         <div className="App">
           <header className="App-header">
-            <h1 className="App-title">
-              Campus+
-            </h1>
+            <h1 className="App-title">Campus+</h1>
             <nav className="App-nav">
               <select
                 className="App-select"
@@ -34,12 +32,10 @@ const App: React.FC = () => {
           </header>
 
           <main className="App-main">
-            {currentPage === 'solicitar' && (
-              <SolicitarDocumentoForm userId={user.id!} />
+            {currentPage === "solicitar" && (
+              <SolicitarDocumentoForm userId={user.user!.id!} />
             )}
-            {currentPage === 'forum' && (
-              <ForumPage username={user.username}/>
-            )}
+            {currentPage === "forum" && <ForumPage user={user} />}
           </main>
         </div>
       )}

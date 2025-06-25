@@ -1,5 +1,10 @@
+import { Aluno } from "./Aluno";
+import { Professor } from "./Professor";
+import { User } from "./User";
+
 export interface UserResponse {
-    authenticated: boolean;
-    id: number | null;
-    username: string | null;
+  authenticated: boolean;
+  user: User | null;
+  aluno?: Aluno | null;
+  professor?: Professor | null;
 }

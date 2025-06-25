@@ -25,11 +25,11 @@ public class ForumController {
 
     @PostMapping
     public Topic createTopic(@RequestBody CreateTopicDTO dto) {
-        return service.createTopic(dto.getTitle(), dto.getAuthor(), dto.getContent());
+        return service.createTopic(dto);
     }
 
     @PostMapping("/{id}/posts")
     public Post reply(@PathVariable Long id, @RequestBody CreatePostDTO dto) {
-        return service.addReply(id, dto.getAuthor(), dto.getContent());
+        return service.addReply(id, dto);
     }
 }

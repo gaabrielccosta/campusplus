@@ -7,5 +7,8 @@ import lombok.Setter;
 @Setter
 public class CreatePostDTO {
     private String author;
+    private String role;
+    private String curso;
+    private String departamento;
     private String content;
 }

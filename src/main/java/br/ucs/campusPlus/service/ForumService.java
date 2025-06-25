@@ -1,5 +1,7 @@
 package br.ucs.campusPlus.service;
 
+import br.ucs.campusPlus.dto.CreatePostDTO;
+import br.ucs.campusPlus.dto.CreateTopicDTO;
 import br.ucs.campusPlus.entity.Post;
 import br.ucs.campusPlus.entity.Topic;
 import br.ucs.campusPlus.repository.PostRepository;
@@ -25,12 +27,15 @@ public class ForumService {
     }
 
     @Transactional
-    public Topic createTopic(String title, String author, String content) {
+    public Topic createTopic(CreateTopicDTO dto) {
         Topic topic = new Topic();
-        topic.setTitle(title);
+        topic.setTitle(dto.getTitle());
         Post first = new Post();
-        first.setAuthor(author);
-        first.setContent(content);
+        first.setAuthor(dto.getAuthor());
+        first.setRole(dto.getRole());
+        first.setCurso(dto.getCurso());
+        first.setDepartamento(dto.getDepartamento());
+        first.setContent(dto.getContent());
         first.setCreatedAt(LocalDateTime.now());
         first.setTopic(topic);
         topic.getPosts().add(first);
@@ -38,12 +43,15 @@ public class ForumService {
     }
 
     @Transactional
-    public Post addReply(Long topicId, String author, String content) {
+    public Post addReply(Long topicId, CreatePostDTO dto) {
         Topic topic = topicRepo.findById(topicId)
                 .orElseThrow(() -> new RuntimeException("Tópico não encontrado"));
         Post post = new Post();
-        post.setAuthor(author);
-        post.setContent(content);
+        post.setAuthor(dto.getAuthor());
+        post.setRole(dto.getRole());
+        post.setCurso(dto.getCurso());
+        post.setDepartamento(dto.getDepartamento());
+        post.setContent(dto.getContent());
         post.setCreatedAt(LocalDateTime.now());
         post.setTopic(topic);
         return postRepo.save(post);
