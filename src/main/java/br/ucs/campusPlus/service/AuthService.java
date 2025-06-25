@@ -22,22 +22,22 @@ public class AuthService {
     @Transactional
     public UserResponse register(AuthRequest req) {
         if (userRepo.findByUsername(req.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("Username já existe");
+            return new UserResponse(false, null, null);
         }
         User u = new User();
         u.setUsername(req.getUsername());
         u.setPassword(passwordEncoder.encode(req.getPassword()));
         User saved = userRepo.save(u);
-        return new UserResponse(saved.getId(), saved.getUsername());
+        return new UserResponse(true, saved.getId(), saved.getUsername());
     }
 
     @Transactional()
     public UserResponse login(AuthRequest req) {
         User u = userRepo.findByUsername(req.getUsername())
-                .orElseThrow(() -> new IllegalArgumentException("Credenciais inválidas"));
-        if (!passwordEncoder.matches(req.getPassword(), u.getPassword())) {
-            throw new IllegalArgumentException("Credenciais inválidas");
+                .orElse(null);
+        if (u == null || !passwordEncoder.matches(req.getPassword(), u.getPassword())) {
+            return new UserResponse(false, null, null);
         }
-        return new UserResponse(u.getId(), u.getUsername());
+        return new UserResponse(true, u.getId(), u.getUsername());
     }
 }
