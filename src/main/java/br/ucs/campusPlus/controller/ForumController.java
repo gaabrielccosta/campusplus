@@ -2,7 +2,7 @@ package br.ucs.campusPlus.controller;
 
 import br.ucs.campusPlus.dto.CreatePostDTO;
 import br.ucs.campusPlus.dto.CreateTopicDTO;
-import br.ucs.campusPlus.entity.MensagemChat;
+import br.ucs.campusPlus.entity.Postagem;
 import br.ucs.campusPlus.entity.TopicoForum;
 import br.ucs.campusPlus.service.ForumService;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +29,7 @@ public class ForumController {
     }
 
     @PostMapping("/{id}/posts")
-    public MensagemChat reply(@PathVariable Long id, @RequestBody CreatePostDTO dto) {
+    public Postagem reply(@PathVariable Long id, @RequestBody CreatePostDTO dto) {
         return service.addReply(id, dto);
     }
 }

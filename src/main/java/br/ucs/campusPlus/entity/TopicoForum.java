@@ -19,5 +19,5 @@ public class TopicoForum {
     private String title;
 
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MensagemChat> posts = new ArrayList<>();
+    private List<Postagem> posts = new ArrayList<>();
 }

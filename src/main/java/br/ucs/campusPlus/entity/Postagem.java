@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Table(name = "posts")
 @Getter
 @Setter
-public class MensagemChat {
+public class Postagem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
