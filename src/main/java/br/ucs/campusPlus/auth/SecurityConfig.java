@@ -20,7 +20,7 @@ public class SecurityConfig {
                 // todas as requisições:
                 .authorizeHttpRequests(auth -> auth
                         // libera apenas esses caminhos sem autenticação
-                        .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
+                        .requestMatchers("/api/**").permitAll()
                         // qualquer outra requer autenticação
                         .anyRequest().authenticated()
                 )

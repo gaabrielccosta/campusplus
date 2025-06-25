@@ -1,35 +1,50 @@
-// Arquivo: src/App.tsx
-
-import React, { JSX, useState } from 'react';
+import React, { useState } from 'react';
 import './App.css';
-import SolicitarDocumentoForm, { DocumentoDTO } from './components/SolicitarDocumentos/SolicitarDocumentoForm';
+import SolicitarDocumentoForm from './components/SolicitarDocumentos/SolicitarDocumentoForm';
 import Login from './components/Login/Login';
+import { UserResponse } from './types/UserResponse';
+import ForumPage from './components/Forum/ForumPage';
+
+type Page = 'solicitar' | 'forum';
 
 const App: React.FC = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
-
-  const onSuccess = (doc: DocumentoDTO) => {
-    console.log('Documento criado com sucesso:', doc);
-    // aqui você pode atualizar estado, mostrar notificação, etc.
-  };
+  const [user, setUser] = useState<UserResponse | null>(null);
+  const [currentPage, setCurrentPage] = useState<Page>('solicitar');
 
   return (
     <>
-      {!loggedIn && (
-        <Login setLoggedIn={setLoggedIn} />
-      )}
-      {loggedIn && (
+      {!user?.authenticated && <Login setUser={setUser} />}
+      {user && user.authenticated && (
         <div className="App">
           <header className="App-header">
-            <h1>Campus+ - Solicitar Documento</h1>
+            <h1 className="App-title">
+              Campus+
+            </h1>
+            <nav className="App-nav">
+              <select
+                className="App-select"
+                value={currentPage}
+                onChange={(e) => setCurrentPage(e.target.value as Page)}
+              >
+                <option value="solicitar">Solicitar Documentos</option>
+                <option value="forum">Fórum</option>
+                {/* futuras páginas */}
+              </select>
+            </nav>
           </header>
-          <main>
-            <SolicitarDocumentoForm alunoId={1} onSuccess={onSuccess} />
+
+          <main className="App-main">
+            {currentPage === 'solicitar' && (
+              <SolicitarDocumentoForm userId={user.id!} />
+            )}
+            {currentPage === 'forum' && (
+              <ForumPage />
+            )}
           </main>
         </div>
       )}
     </>
   );
-}
+};
 
 export default App;

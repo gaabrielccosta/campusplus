@@ -4,10 +4,10 @@ import api from '../../services/api';
 import { UserResponse } from '../../types/UserResponse';
 
 interface LoginProps {
-    setLoggedIn: (bool: boolean) => void;
+    setUser: (user: UserResponse) => void;
 }
 
-const Login: React.FC<LoginProps> = ({ setLoggedIn }) => {
+const Login: React.FC<LoginProps> = ({ setUser }) => {
     const [isRegistering, setIsRegistering] = useState<boolean>(false);
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -59,7 +59,8 @@ const Login: React.FC<LoginProps> = ({ setLoggedIn }) => {
 
         const userRespose = response.data;
         if (userRespose.authenticated) {
-            setLoggedIn(true);
+            setUser(userRespose);
+            console.log(userRespose);
         } else {
             setError("Usuário ou senha inválidos.");
         }

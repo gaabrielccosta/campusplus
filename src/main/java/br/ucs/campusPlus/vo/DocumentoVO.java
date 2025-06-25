@@ -2,12 +2,15 @@ package br.ucs.campusPlus.vo;
 
 import br.ucs.campusPlus.entity.Documento;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Getter
+@Setter
 public class DocumentoVO {
     private Long id;
+    private String erro;
     private String tipo;
     private String status;
     private LocalDate dataSolicitacao;
