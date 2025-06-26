@@ -9,7 +9,7 @@ type Page = "solicitar" | "forum";
 
 const App: React.FC = () => {
   const [user, setUser] = useState<UserResponse | null>(null);
-  const [currentPage, setCurrentPage] = useState<Page>("solicitar");
+  const [currentPage, setCurrentPage] = useState<Page>("forum");
 
   return (
     <>

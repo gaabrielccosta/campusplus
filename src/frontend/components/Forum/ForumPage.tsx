@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FormEvent } from "react";
+import React, { useState, useEffect, FormEvent, useRef } from "react";
 import api from "../../services/api";
 import { UserResponse } from "../../types/UserResponse";
 
@@ -43,6 +43,8 @@ const ForumPage: React.FC<IForumPageProps> = ({ user }) => {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
 
+  const selectedTopicRef = useRef<Topic | null>(null);
+
   // Form state para novo tópico
   const [newTitle, setNewTitle] = useState("");
   const [newContent, setNewContent] = useState("");
@@ -51,6 +53,7 @@ const ForumPage: React.FC<IForumPageProps> = ({ user }) => {
   const [replyContent, setReplyContent] = useState("");
 
   useEffect(() => {
+    // define aqui fora pra poder limpar depois
     const fetchTopics = async () => {
       try {
         const res = await api.get<Topic[]>("/topics");
@@ -67,13 +70,30 @@ const ForumPage: React.FC<IForumPageProps> = ({ user }) => {
             createdAt: new Date(post.createdAt),
           })),
         }));
+
+        console.log("O SELECTED TOPIC É", selectedTopic);
+        const currentTopic = topicsFromApi.find(t => t.id === selectedTopic?.id);
+        if (currentTopic && (!selectedTopicRef || !selectedTopicRef.current || JSON.stringify(selectedTopicRef.current) !== JSON.stringify(currentTopic))) {
+          selectedTopicRef.current = currentTopic;
+          setSelectedTopic(currentTopic);
+        }
+
         setTopics(topicsFromApi);
+
       } catch (err) {
         console.error("Erro ao carregar tópicos:", err);
       }
     };
+
+    // busca inicial imediata
     fetchTopics();
-  }, []);
+
+    // cria o polling a cada 1 segundo
+    const intervalId = setInterval(fetchTopics, 1000);
+
+    // cleanup ao desmontar ou quando selectedTopic mudar
+    return () => clearInterval(intervalId);
+  }, [selectedTopic]);
 
   // Criar novo tópico
   const handleCreateTopic = async (e: FormEvent) => {
@@ -144,6 +164,7 @@ const ForumPage: React.FC<IForumPageProps> = ({ user }) => {
     }
   };
 
+  console.log(selectedTopic)
   return (
     <div style={{ maxWidth: "800px", margin: "0 auto", padding: "1rem" }}>
       <h1>Fórum</h1>
@@ -200,6 +221,7 @@ const ForumPage: React.FC<IForumPageProps> = ({ user }) => {
                       onClick={(e) => {
                         e.preventDefault();
                         setSelectedTopic(topic);
+                        console.log("cliquei")
                       }}
                       style={{
                         fontSize: "1.1rem",
