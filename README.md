@@ -21,8 +21,8 @@ Antes de começar, verifique se você tem os seguintes requisitos instalados:
 1. Clone o repositório:
 
     ```bash
-    git clone https://github.com/JoaoBufon/matriculas.git
-    cd matriculas
+    git clone https://github.com/gaabrielccosta/campusplus.git
+    cd campusplus
     ```
 
 2. Navegue até a pasta do backend e execute:
