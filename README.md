@@ -1,7 +1,3 @@
-# Matriculas - Aplicação sobre Estudantes de IES
-
-Este projeto é uma aplicação desenvolvida para gerenciar informações sobre estudantes matriculados nos cursos das Instituições de Ensino Superior (IES) do Brasil. A aplicação utiliza React no frontend e Spring Boot no backend, com o objetivo de demonstrar a integração dessas tecnologias no contexto de um projeto acadêmico da matéria de Projeto e Arquitetura de Software.
-
 ## Tecnologias Utilizadas
 
 - **Frontend**: React.js
@@ -58,12 +54,6 @@ O servidor backend estará disponível na URL `http://localhost:8080`.
     ```
 
 O frontend estará disponível na URL `http://localhost:3000`.
-
-## Funcionalidades
-
-- Gerenciamento de estudantes matriculados.
-- Exibição de cursos disponíveis nas IES.
-- Cadastro e listagem de estudantes e suas matrículas.
 
 ## Contribuição
 
